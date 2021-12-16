@@ -1,5 +1,5 @@
 var firstRoundTexts = document.getElementsByClassName("name-text");
-var teamNames;
+var teamNames = [];
 console.log(firstRoundTexts);
 
 function SetText() {
@@ -35,11 +35,15 @@ function SetGrid() {
             var elementsToFill1 = document.getElementById("name"+(2*j));
             var elementsToFill2 = document.getElementById("name"+(2*j+1));
             //console.log(document.getElementById("name"+(2*j)));
-            elementsToFill1.value = teamNames[2*j];
-            elementsToFill2.value = teamNames[2*j+1];
+            elementsToFill1.value = teamNames[j];
+            elementsToFill2.value = teamNames[teamNames.length-j-1];
         }
     }
     else {
         console.log("Кол-во команд не является степенью 2")
     }
+}
+function Clear() {
+    document.getElementById("bracket-area2").innerHTML = "";
+    teamNames = [];
 }
