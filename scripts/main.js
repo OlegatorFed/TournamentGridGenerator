@@ -14,18 +14,22 @@ function SetTeams() {
 
 function SetGrid() {
 
+    Clear();
     SetTeams();
     var numberOfTeams = teamNames.length;
     //console.log((numberOfTeams & (numberOfTeams - 1)) == 0);
 
-    if ((numberOfTeams & (numberOfTeams - 1)) == 0) {
+    if ((numberOfTeams != 0)&&(numberOfTeams & (numberOfTeams - 1)) == 0) {
 
         for (var i = 0; i < Math.log2(numberOfTeams); i++) {
             //console.log(numberOfTeams / Math.pow(2, i+1));
             document.getElementById("bracket-area2").innerHTML += '<div class="col" name="round' + i + '"></div>';
+            document.getElementById("bracket-area2").innerHTML += '<div class="con-col-'+ i +'"></div>';
+            for (var j = 0; j < Math.floor(numberOfTeams / Math.pow(2, i+2)); j++){
+                document.getElementsByClassName("con-col-" + i)[0].innerHTML += '<div class="connector"></div>';
+            }
             for (var j = 0; j < numberOfTeams / Math.pow(2, i+1); j++){
-                //console.log(numberOfTeams / Math.pow(2, i+1));
-                document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" class="name-text" id="name'+ (i*100 + 2*j) +'"> <input type="text" class="name-text" id="name'+ (i*100 + 2*j+1) +'"> </div>';
+                document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j) +'"> <input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j+1) +'"> </div>';
             }
         }
         for (var j = 0; j < numberOfTeams / 2; j++){
@@ -41,9 +45,15 @@ function SetGrid() {
     }
     else {
         console.log("Кол-во команд не является степенью 2")
+        document.getElementById("bracket-area2").innerText += "Кол-во команд не является степенью 2";
     }
 }
 function Clear() {
     document.getElementById("bracket-area2").innerHTML = "";
     teamNames = [];
+}
+
+function UpdateTeams() {
+    SetTeams();
+    document.getElementById("teams-counter").innerText = "Number of teams: " + teamNames.length;
 }
