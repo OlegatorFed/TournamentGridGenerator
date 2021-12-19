@@ -12,8 +12,11 @@ function SetTeams() {
     teamNames = document.getElementById("teams-names").value.split('\n');
 }
 
-function SetGrid() {
+function SetGameNode() {
+    //later
+}
 
+function SetGrid() {
     Clear();
     SetTeams();
     var numberOfTeams = teamNames.length;
@@ -29,7 +32,7 @@ function SetGrid() {
                 document.getElementsByClassName("con-col-" + i)[0].innerHTML += '<div class="connector"></div>';
             }
             for (var j = 0; j < numberOfTeams / Math.pow(2, i+1); j++){
-                document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j) +'"> <input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j+1) +'"> </div>';
+                document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j) +'" onclick="DecideTheWinner(this)"> <input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j+1) +'" onclick="DecideTheWinner(this)"> </div>';
             }
         }
         for (var j = 0; j < numberOfTeams / 2; j++){
@@ -56,4 +59,11 @@ function Clear() {
 function UpdateTeams() {
     SetTeams();
     document.getElementById("teams-counter").innerText = "Number of teams: " + teamNames.length;
+}
+
+function DecideTheWinner(element) {
+    console.log(element.id.substr(4,element.className.length));
+    textFieldNumber = element.id.substr(4,element.className.length);
+    console.log(document.getElementById("name" + (Math.floor(textFieldNumber / 100)*100 + 100 + Math.floor(textFieldNumber % 100 / 2))));
+    document.getElementById("name" + (Math.floor(textFieldNumber / 100)*100 + 100 + Math.floor(textFieldNumber % 100 / 2))).value = element.value;
 }
