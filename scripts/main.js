@@ -1,6 +1,7 @@
 var firstRoundTexts = document.getElementsByClassName("name-text");
 var teamNames = [];
-console.log(firstRoundTexts);
+
+UpdateTeams();
 
 function SetText() {
     SetTeams();
@@ -9,7 +10,9 @@ function SetText() {
     }
 }
 function SetTeams() {
-    teamNames = document.getElementById("teams-names").value.split('\n');
+    teamsText = document.getElementById("teams-names").value;
+    teamNames = teamsText.split('\n').filter(item => item);
+    console.log(teamNames);
 }
 
 function SetGameNode() {
