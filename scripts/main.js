@@ -82,22 +82,76 @@ function SetGrid() {
         }
     }
     else {
-        // nearestPower = Math.pow(2,Math.floor(Math.log(numberOfTeams)/Math.log(2)));
-        // console.log(nearestPower, Math.log2(numberOfTeams));
-        document.getElementById("bracket-area2").innerText += "Кол-во команд не является степенью 2";
+        nearestPower = Math.pow(2,Math.floor(Math.log(numberOfTeams)/Math.log(2)));
+        // document.getElementById("bracket-area2").innerText += "Кол-во команд не является степенью 2";
 
-        // for (var i = 0; i < Math.log2(numberOfTeams); i++) {
-        //
-        //     document.getElementById("bracket-area2").innerHTML += '<div class="col" name="round' + i + '"></div>';
-        //     document.getElementById("bracket-area2").innerHTML += '<div class="con-col-'+ i +'"></div>';
-        //
-        //     for (var j = 0; j < Math.floor(nearestPower*2 / Math.pow(2, i+2)); j++){
-        //         document.getElementsByClassName("con-col-" + i)[0].innerHTML += '<div class="connector"></div>';
-        //     }
-        //     for (var j = 0; j < numberOfTeams / Math.pow(2, i+1); j++){
-        //         document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j) +'" onclick="DecideTheWinner(this)"> <input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j+1) +'" onclick="DecideTheWinner(this)"> </div>';
-        //     }
-        // }
+        for (var i = 0; i < Math.log2(numberOfTeams); i++) {
+
+            document.getElementById("bracket-area2").innerHTML += '<div class="col" name="round' + i + '"></div>';
+            document.getElementById("bracket-area2").innerHTML += '<div class="con-col-'+ i +'"></div>';
+
+            for (var j = 0; j < Math.floor(nearestPower*2 / Math.pow(2, i+2)); j++){
+                document.getElementsByClassName("con-col-" + i)[0].innerHTML += '<div class="connector"></div>';
+            }
+            for (var j = 0; j < nearestPower*2 / Math.pow(2, i+1); j++){
+                document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j) +'" onclick="DecideTheWinner(this)"> <input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j+1) +'" onclick="DecideTheWinner(this)"> </div>';
+            }
+        }
+
+        var firstRoundTeams = (numberOfTeams - nearestPower) * 2;
+        var upBuffer = Math.floor((numberOfTeams - firstRoundTeams)/2);
+        var bottomBuffer = Math.ceil((numberOfTeams - firstRoundTeams)/2);
+        var teamsAreNotEven = numberOfTeams % 2 != 0 ? 1 : 0;
+        var bottomCounter = 0;
+
+        for (var j = 0; j < numberOfTeams / 2; j++){
+
+            var elementsToFill1;
+            var elementsToFill2;
+            console.log(numberOfTeams, nearestPower - (bottomBuffer - bottomCounter));
+
+            //первая
+            if ( upBuffer > 2*j ){
+                elementsToFill1 = document.getElementById("name"+(100+(2*j)));
+            }
+            else if (numberOfTeams - bottomBuffer <= 2*j){
+                elementsToFill1 = document.getElementById("name"+(100+ (nearestPower - (bottomBuffer - bottomCounter)) ) );
+                bottomCounter++;
+            }
+            else {
+                elementsToFill1 = document.getElementById("name"+((2*j)+upBuffer));
+            }
+
+            //вторая
+            if (upBuffer > 2*j+1){
+                elementsToFill2 = document.getElementById("name"+(100+(2*j+1)));
+                //console.log(100+(2*j+1));
+            }
+            else if (numberOfTeams - bottomBuffer <= 2*j+1){
+                elementsToFill2 = document.getElementById("name"+(100 + (nearestPower - (bottomBuffer - bottomCounter))));
+                bottomCounter++;
+            }
+            else {
+                elementsToFill2 = document.getElementById("name"+((2*j+1) + upBuffer));
+                //console.log((2*j+1) + upBuffer);
+            }
+
+            elementsToFill1.value = teamNames[j];
+            if ((2*j+1 < numberOfTeams && numberOfTeams % 2 != 0) || (numberOfTeams % 2 == 0)){
+                elementsToFill2.value = teamNames[teamNames.length-j-1];
+            }
+        }
+
+        for (var k = 0; k < upBuffer; k++){
+
+            document.getElementById("name"+(2*k)).setAttribute("disabled", "disabled");
+            document.getElementById("name"+(2*k+1)).setAttribute("disabled", "disabled");
+        }
+
+        for (var k = nearestPower - bottomBuffer; k < nearestPower; k++){
+            document.getElementById("name" + (2*k)).setAttribute("disabled", "disabled");
+            document.getElementById("name" + (2*k+1)).setAttribute("disabled", "disabled");
+        }
     }
 }
 
@@ -123,6 +177,7 @@ function SetTableRow(name, games, wins, losses, totalScore){
 
 function Clear() {
     document.getElementById("bracket-area2").innerHTML = "";
+    document.getElementById("score-table").innerHTML = "";
     teamNames = [];
 }
 
