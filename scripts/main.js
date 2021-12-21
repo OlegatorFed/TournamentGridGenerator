@@ -2,6 +2,7 @@ var firstRoundTexts = document.getElementsByClassName("name-text");
 var teamNames = [];
 var scores = {};
 var scoreTable = document.getElementById("score-table");
+var lastGameRound;
 tourMode = document.getElementById("tour-mode").checked;
 editMode = document.getElementById("edit-mode").checked;
 var mode = !editMode;
@@ -70,7 +71,9 @@ function SetGrid() {
             for (var j = 0; j < numberOfTeams / Math.pow(2, i+1); j++){
                 document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j) +'" onclick="DecideTheWinner(this)"> <input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j+1) +'" onclick="DecideTheWinner(this)"> </div>';
             }
+            lastGameRound = i;
         }
+        document.getElementById("bracket-area2").innerHTML += '<div id="winner"></div>';
         for (var j = 0; j < numberOfTeams / 2; j++){
             var elementsToFill1 = document.getElementById("name"+(2*j));
             var elementsToFill2 = document.getElementById("name"+(2*j+1));
@@ -93,7 +96,9 @@ function SetGrid() {
             for (var j = 0; j < nearestPower*2 / Math.pow(2, i+1); j++){
                 document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j) +'" onclick="DecideTheWinner(this)"> <input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j+1) +'" onclick="DecideTheWinner(this)"> </div>';
             }
+            lastGameRound = i;
         }
+        document.getElementById("bracket-area2").innerHTML += '<div id="winner"></div>';
 
         var firstRoundTeams = (numberOfTeams - nearestPower) * 2;
         var upBuffer = Math.floor((numberOfTeams - firstRoundTeams)/2);
@@ -181,10 +186,13 @@ function UpdateTeams() {
 }
 
 function DecideTheWinner(element) {
-    if (mode){
-        teamName = element.value;
-        textFieldNumber = element.id.substr(4,element.className.length);
-        loserElement = (textFieldNumber % 2 == 0) ? document.getElementById("name" + (parseInt(textFieldNumber) + 1)) : document.getElementById("name" + (parseInt(textFieldNumber) - 1));
+    textFieldNumber = element.id.substr(4,element.className.length);
+    teamName = element.value;
+    loserElement = (textFieldNumber % 2 == 0) ? document.getElementById("name" + (parseInt(textFieldNumber) + 1)) : document.getElementById("name" + (parseInt(textFieldNumber) - 1));
+    console.log(Math.ceil(Math.log2(teamNames.length)) - 1, Math.floor(textFieldNumber / 100));
+
+    if (mode && Math.ceil(Math.log2(teamNames.length)) - 1 != Math.floor(textFieldNumber / 100)){
+
         loserName = loserElement.value;
 
         scores[teamName].games++;
@@ -200,6 +208,12 @@ function DecideTheWinner(element) {
         UpdateTable();
         document.getElementById("name" + (Math.floor(textFieldNumber / 100)*100 + 100 + Math.floor(textFieldNumber % 100 / 2))).value = element.value;
     }
+    else if (Math.ceil(Math.log2(teamNames.length)) - 1 == Math.floor(textFieldNumber / 100)) {
+        document.getElementById("winner").innerText = teamName;
+
+        loserElement.setAttribute("disabled", "disabled");
+        element.setAttribute("disabled", "disabled");
+    }
 
 }
 
@@ -207,9 +221,18 @@ function UpdateMode() {
     tourMode = document.getElementById("tour-mode").checked;
     editMode = document.getElementById("edit-mode").checked;
     mode = !editMode;
+    console.log(document.getElementById("bracket-area2").innerHTML === '');
     if (editMode){
-        Clear();
-        SetGrid();
+        if (document.getElementById("bracket-area2").innerHTML !== ''){
+            Clear();
+            SetGrid();
+        }
+        document.getElementById("generate-btn").disabled = false;
+        document.getElementById("clear-btn").disabled = false;
+    }
+    else {
+        document.getElementById("generate-btn").disabled = true;
+        document.getElementById("clear-btn").disabled = true;
     }
     console.log(tourMode, editMode);
 }
