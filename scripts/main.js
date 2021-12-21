@@ -19,6 +19,15 @@ function ScoreInit() {
         }
     })
 }
+ function SortScores() {
+    for (var i = 0; i < teamNames.length; i++){
+        for (var j = i+1; j < teamNames.length; j++){
+            if (scores[teamNames[i]].wins <= scores[teamNames[j]].wins){
+                [teamNames[i], teamNames[j]] = [teamNames[j], teamNames[i]];
+            }
+        }
+    }
+ }
 
 function SetText() {
     SetTeams();
@@ -50,9 +59,10 @@ function SetGrid() {
     if ((numberOfTeams != 0)&&(numberOfTeams & (numberOfTeams - 1)) == 0) {
 
         for (var i = 0; i < Math.log2(numberOfTeams); i++) {
-            //console.log(numberOfTeams / Math.pow(2, i+1));
+
             document.getElementById("bracket-area2").innerHTML += '<div class="col" name="round' + i + '"></div>';
             document.getElementById("bracket-area2").innerHTML += '<div class="con-col-'+ i +'"></div>';
+
             for (var j = 0; j < Math.floor(numberOfTeams / Math.pow(2, i+2)); j++){
                 document.getElementsByClassName("con-col-" + i)[0].innerHTML += '<div class="connector"></div>';
             }
@@ -72,17 +82,38 @@ function SetGrid() {
         }
     }
     else {
-        console.log("Кол-во команд не является степенью 2")
+        // nearestPower = Math.pow(2,Math.floor(Math.log(numberOfTeams)/Math.log(2)));
+        // console.log(nearestPower, Math.log2(numberOfTeams));
         document.getElementById("bracket-area2").innerText += "Кол-во команд не является степенью 2";
+
+        // for (var i = 0; i < Math.log2(numberOfTeams); i++) {
+        //
+        //     document.getElementById("bracket-area2").innerHTML += '<div class="col" name="round' + i + '"></div>';
+        //     document.getElementById("bracket-area2").innerHTML += '<div class="con-col-'+ i +'"></div>';
+        //
+        //     for (var j = 0; j < Math.floor(nearestPower*2 / Math.pow(2, i+2)); j++){
+        //         document.getElementsByClassName("con-col-" + i)[0].innerHTML += '<div class="connector"></div>';
+        //     }
+        //     for (var j = 0; j < numberOfTeams / Math.pow(2, i+1); j++){
+        //         document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j) +'" onclick="DecideTheWinner(this)"> <input type="text" readonly class="name-text" id="name'+ (i*100 + 2*j+1) +'" onclick="DecideTheWinner(this)"> </div>';
+        //     }
+        // }
     }
 }
+
+
+
 function SetTable(numOfTeams) {
-    scoreTable.innerHTML = '';
     scoreTable.innerHTML += '<tr><td>Team</td><td>Games</td><td>Wins</td><td>Losses</td><td>Total Score</td></tr>'
     for (var k = 0; k < numOfTeams; k++) {
-        scoreTable.innerHTML += '<tr id="'+ teamNames[k] +'-score">'+ SetTableRow(teamNames[k], 0, 0, 0, 0) +'</tr>';
+        scoreTable.innerHTML += '<tr id="'+ teamNames[k] +'-score">'+ SetTableRow(teamNames[k], scores[teamNames[k]].games, scores[teamNames[k]].wins, scores[teamNames[k]].losses, scores[teamNames[k]].score) +'</tr>';
     }
 
+}
+
+function UpdateTable() {
+    scoreTable.innerHTML = '';
+    SetTable(teamNames.length);
 }
 
 function SetTableRow(name, games, wins, losses, totalScore){
@@ -114,9 +145,10 @@ function DecideTheWinner(element) {
     scores[loserName].games++;
     scores[loserName].losses++;
 
+    SortScores();
+
     loserElement.setAttribute("disabled", "disabled");
     element.setAttribute("disabled", "disabled");
-    document.getElementById(teamName+"-score").innerHTML = SetTableRow(teamName, scores[teamName].games, scores[teamName].wins, scores[teamName].losses, scores[teamName].score);
-    document.getElementById(loserName+"-score").innerHTML = SetTableRow(loserName, scores[loserName].games, scores[loserName].wins, scores[loserName].losses, scores[loserName].score);
+    UpdateTable();
     document.getElementById("name" + (Math.floor(textFieldNumber / 100)*100 + 100 + Math.floor(textFieldNumber % 100 / 2))).value = element.value;
 }
