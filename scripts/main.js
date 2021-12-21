@@ -2,6 +2,9 @@ var firstRoundTexts = document.getElementsByClassName("name-text");
 var teamNames = [];
 var scores = {};
 var scoreTable = document.getElementById("score-table");
+tourMode = document.getElementById("tour-mode").checked;
+editMode = document.getElementById("edit-mode").checked;
+var mode = !editMode;
 
 UpdateTeams();
 ScoreInit();
@@ -40,7 +43,6 @@ function SetTeams() {
     teamNames = teamsText.split('\n').filter(item => item);
     scores = {};
     ScoreInit();
-    //console.log(teamNames);
 }
 
 
@@ -54,7 +56,6 @@ function SetGrid() {
     SetTeams();
     var numberOfTeams = teamNames.length;
     SetTable(numberOfTeams);
-    //console.log((numberOfTeams & (numberOfTeams - 1)) == 0);
 
     if ((numberOfTeams != 0)&&(numberOfTeams & (numberOfTeams - 1)) == 0) {
 
@@ -71,19 +72,15 @@ function SetGrid() {
             }
         }
         for (var j = 0; j < numberOfTeams / 2; j++){
-            //console.log(numberOfTeams / Math.pow(2, i+1));
-            //document.getElementsByName("round"+i)[0].innerHTML += '<div class="game-node"><input type="text" class="name-text" id="name'+ (i*100 + 2*j) +'"> <input type="text" class="name-text" id="name'+ (i*100 + 2*j+1) +'"> </div>';
-            //console.log(2*j, 2*j+1);
             var elementsToFill1 = document.getElementById("name"+(2*j));
             var elementsToFill2 = document.getElementById("name"+(2*j+1));
-            //console.log(document.getElementById("name"+(2*j)));
+
             elementsToFill1.value = teamNames[j];
             elementsToFill2.value = teamNames[teamNames.length-j-1];
         }
     }
     else {
         nearestPower = Math.pow(2,Math.floor(Math.log(numberOfTeams)/Math.log(2)));
-        // document.getElementById("bracket-area2").innerText += "Кол-во команд не является степенью 2";
 
         for (var i = 0; i < Math.log2(numberOfTeams); i++) {
 
@@ -108,7 +105,6 @@ function SetGrid() {
 
             var elementsToFill1;
             var elementsToFill2;
-            console.log(numberOfTeams, nearestPower - (bottomBuffer - bottomCounter));
 
             //первая
             if ( upBuffer > 2*j ){
@@ -125,7 +121,6 @@ function SetGrid() {
             //вторая
             if (upBuffer > 2*j+1){
                 elementsToFill2 = document.getElementById("name"+(100+(2*j+1)));
-                //console.log(100+(2*j+1));
             }
             else if (numberOfTeams - bottomBuffer <= 2*j+1){
                 elementsToFill2 = document.getElementById("name"+(100 + (nearestPower - (bottomBuffer - bottomCounter))));
@@ -133,7 +128,6 @@ function SetGrid() {
             }
             else {
                 elementsToFill2 = document.getElementById("name"+((2*j+1) + upBuffer));
-                //console.log((2*j+1) + upBuffer);
             }
 
             elementsToFill1.value = teamNames[j];
@@ -187,23 +181,35 @@ function UpdateTeams() {
 }
 
 function DecideTheWinner(element) {
-    teamName = element.value;
-    console.log(teamName);
-    textFieldNumber = element.id.substr(4,element.className.length);
-    console.log((textFieldNumber % 2 == 0) ? "name" + (parseInt(textFieldNumber)+1) : "name" + (parseInt(textFieldNumber) - 1));
-    loserElement = (textFieldNumber % 2 == 0) ? document.getElementById("name" + (parseInt(textFieldNumber) + 1)) : document.getElementById("name" + (parseInt(textFieldNumber) - 1));
-    loserName = loserElement.value;
+    if (mode){
+        teamName = element.value;
+        textFieldNumber = element.id.substr(4,element.className.length);
+        loserElement = (textFieldNumber % 2 == 0) ? document.getElementById("name" + (parseInt(textFieldNumber) + 1)) : document.getElementById("name" + (parseInt(textFieldNumber) - 1));
+        loserName = loserElement.value;
 
-    scores[teamName].games++;
-    scores[teamName].wins++;
+        scores[teamName].games++;
+        scores[teamName].wins++;
 
-    scores[loserName].games++;
-    scores[loserName].losses++;
+        scores[loserName].games++;
+        scores[loserName].losses++;
 
-    SortScores();
+        SortScores();
 
-    loserElement.setAttribute("disabled", "disabled");
-    element.setAttribute("disabled", "disabled");
-    UpdateTable();
-    document.getElementById("name" + (Math.floor(textFieldNumber / 100)*100 + 100 + Math.floor(textFieldNumber % 100 / 2))).value = element.value;
+        loserElement.setAttribute("disabled", "disabled");
+        element.setAttribute("disabled", "disabled");
+        UpdateTable();
+        document.getElementById("name" + (Math.floor(textFieldNumber / 100)*100 + 100 + Math.floor(textFieldNumber % 100 / 2))).value = element.value;
+    }
+
+}
+
+function UpdateMode() {
+    tourMode = document.getElementById("tour-mode").checked;
+    editMode = document.getElementById("edit-mode").checked;
+    mode = !editMode;
+    if (editMode){
+        Clear();
+        SetGrid();
+    }
+    console.log(tourMode, editMode);
 }

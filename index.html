@@ -69,14 +69,14 @@
         }
 
         .con-col-1 .connector{
-            height: 174px;
+            height: 160px;
         }
 
         .con-col-2 .connector{
-            height: 334px;
+            height: 322px;
         }
         .con-col-3 .connector{
-            height: 678px;
+            height: 647px;
         }
 
         #score-table{
@@ -98,11 +98,15 @@
 
     <form>
 
-        <label>Enter teams names. Every line considered as one team. Number of teams must be power of 2.</label>
+        <label>Enter teams names. Every line considered as one team.</label>
         <p></p>
         <textarea id="teams-names" oninput="UpdateTeams()"></textarea>
 
         <p><label id="teams-counter">Number of teams: </label></p>
+
+        <p><label>Edit Mode</label><input type="radio" name="mode" id="edit-mode" checked="true" onclick="UpdateMode()"></p>
+        <p><label>Tournament Mode</label><input type="radio" name="mode" id="tour-mode" onclick="UpdateMode()"></p>
+
         <input type="button" value="Clear" onclick="Clear()">
         <input type="button" value="Generate" onclick="SetGrid()">
 
