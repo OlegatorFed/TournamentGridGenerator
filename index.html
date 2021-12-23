@@ -102,6 +102,15 @@
             align-self: center;
         }
 
+        .group-table{
+            border: 2px solid black;
+            margin: 5px 10px;
+        }
+
+        .group-table tr td {
+            border: 1px solid black;
+        }
+
     </style>
 </head>
 <body>
@@ -110,15 +119,24 @@
 
         <label>Enter teams names. Every line considered as one team.</label>
         <p></p>
-        <textarea id="teams-names" oninput="UpdateTeams()"></textarea>
-
+        <textarea id="teams-names" oninput="UpdateTeamsNumber()"></textarea>
         <p><label id="teams-counter">Number of teams: </label></p>
+
+        <p>
+            <label>Group cap</label>
+            <input type="text" id="group-cap" value="2">
+        </p>
+        <p>
+            <label>Number of maps</label>
+            <input type="text" id="maps-number" value="5">
+        </p>
 
         <p><label>Edit Mode</label><input type="radio" name="mode" id="edit-mode" checked="true" onclick="UpdateMode()"></p>
         <p><label>Tournament Mode</label><input type="radio" name="mode" id="tour-mode" onclick="UpdateMode()"></p>
 
         <input type="button" value="Clear" id="clear-btn" onclick="Clear()">
         <input type="button" value="Generate" id="generate-btn" onclick="SetGrid()">
+        <input type="button" value="Generate groups" id="generate-groups-btn" onclick="SetGroupRounds()">
 
     </form>
 
@@ -132,6 +150,8 @@
     </table>
 
 
+    <script src="scripts/edit.js"></script>
+    <script src="scripts/generation.js"></script>
     <script src="scripts/main.js"></script>
 </body>
 </html>
