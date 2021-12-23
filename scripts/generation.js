@@ -164,7 +164,7 @@ function SetGroupTable(group, mapsNumber) {
 function SetTableRowGroup(name, mapsNumber) {
     var mapRow = '';
     for (var k = 0; k < mapsNumber; k++){
-        mapRow += '<td>0</td>';
+        mapRow += '<td></td>';
     }
     return '<td>'+ name +'</td>' + mapRow;
 }
