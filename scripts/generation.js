@@ -120,7 +120,7 @@ function SetGroupRounds() {
     console.log(numberOfGroups);
     for (var i = 0; i < numberOfGroups; i++){
 
-        document.getElementById("bracket-area2").innerHTML += '<table id="group-'+ i +'" class="group-table"></table>';
+        document.getElementById("bracket-area2").innerHTML += '<div><label>Group ' + (i+1) + '</label><table id="group-'+ i +'" class="group-table"></table></div>';
         document.getElementById("group-"+i).innerHTML += '<tr><td>' + 'Name' + '</td>' + numRow + '</tr>';
 
         groups[i] = [];
@@ -132,10 +132,6 @@ function SetGroupRounds() {
             document.getElementById("group-"+i).innerHTML += '<tr>' + SetTableRowGroup(groups[i][k], numberOfMaps) + '</tr>';
 
     }
-
-
-
-    //SetTable(numberOfTeams);
 
 }
 
