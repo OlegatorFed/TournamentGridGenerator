@@ -114,14 +114,14 @@ function SetGroupRounds() {
 
 
     for (var k = 0; k < numberOfMaps; k++){
-        numRow += '<td>' + (k + 1) + '</td>';
+        numRow += '<th>' + (k + 1) + '</th>';
     }
 
     console.log(numberOfGroups);
     for (var i = 0; i < numberOfGroups; i++){
 
-        document.getElementById("bracket-area2").innerHTML += '<div><label>Group ' + (i+1) + '</label><table id="group-'+ i +'" class="group-table"></table></div>';
-        document.getElementById("group-"+i).innerHTML += '<tr><td>' + 'Name' + '</td>' + numRow + '</tr>';
+        document.getElementById("bracket-area2").innerHTML += '<table id="group-'+ i +'" class="group-table"></table>';
+        document.getElementById("group-"+i).innerHTML += '<tr><th>Group ' + (i+1) + '</th>' + numRow + '</tr>';
 
         groups[i] = [];
         for (var j = i*groupCap; j < i*groupCap + groupCap; j++){
